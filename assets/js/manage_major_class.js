@@ -4,20 +4,20 @@
   //sets value of student id in hidden delete form and submits form
   //not completely ideal but wanted to take advantage of flash messages in sails
   function deleteRecord(record_id){
-    $("#deleteform input[name=student_id]").val(record_id);
+    $("#deleteform input[name=major_class_id]").val(record_id);
     $("#deleteform").submit();
   }
 
-  function getStudent(record_id){
-    return $.get("http://localhost:1337/student/" + record_id, function(data){
-      console.log("got student");
+  function getMajorClass(record_id){
+    return $.get("http://localhost:1337/major_class/" + record_id, function(data){
+      console.log("got Major Class");
     })
   }
 
   $(function(){
 
 
-    $('#studentTable').DataTable(
+    $('#major_class_table').DataTable(
         {
          dom: 'Bfrtip',
          buttons: [
@@ -27,9 +27,9 @@
          colReorder:true,
 
          "scrollX": true,
-         columnDefs: [
-           {width:'20%', targets:7}
-         ]
+        //  columnDefs: [
+        //    {width:'20%', targets:7}
+        //  ]
 
 
        });
@@ -37,7 +37,7 @@
 
 
 //this guy adds error messages if people break my rules on my forms.
-    let validate = $("#manageStudentForm").validate({
+    let validate = $("#manageMajorClassForm").validate({
          errorClass: "text-danger",
          rules: {
            first_name: {
@@ -74,15 +74,15 @@
 
 
     //initialize variables for items in the DOM we will work with
-    let manageStudentForm = $("#manageStudentForm");
-    let addStudentButton = $("#addStudentButton");
+    let manageMajorClassForm = $("#manageMajorClassForm");
+    let addMajorClassButton = $("#addMajorClassButton");
 
-    //add student button functionality
-    addStudentButton.click(function(){
+    //add MajorClass button functionality
+    addMajorClassButton.click(function(){
       $("input").val("");
       validate.resetForm();
-      manageStudentForm.attr("action", "/create_student");
-      manageStudentForm.dialog({
+      manageMajorClassForm.attr("action", "/create_major_class");
+      manageMajorClassForm.dialog({
         title: "Add Record",
         width: 700,
         modal: true,
@@ -92,20 +92,20 @@
           },
           "Submit": function() {
             //function to delete record
-            manageStudentForm.submit()
+            manageMajorClassForm.submit()
           }
         }
       });
     })
 
-  	$("#studentTable").on("click", "#editButton", function(e){
-      let recordId = $(this).data("studentid")
-      manageStudentForm.find("input[name=student_id]").val(recordId);
-      manageStudentForm.attr("action", "/update_student");
-      let student = getStudent(recordId);
+  	$("#major_class_table").on("click", "#editButton", function(e){
+      let recordId = $(this).data("major_class_id")
+      manageMajorClassForm.find("input[name=major_class_id]").val(recordId);
+      manageMajorClassForm.attr("action", "/update_major_class");
+      let majorClass = getMajorClass(recordId);
 
       //populate form when api call is done (after we get student to edit)
-      student.done(function(data){
+      majorClass.done(function(data){
         $.each(data, function(name, val){
             var $el = $('[name="'+name+'"]'),
                 type = $el.attr('type');
@@ -123,7 +123,7 @@
         });
       })
 
-      manageStudentForm.dialog({
+      manageMajorClassForm.dialog({
         title: "Add Record",
         width: 700,
         modal: true,
@@ -133,15 +133,15 @@
           },
           Submit: function() {
             //function to delete record
-            manageStudentForm.submit()
+            manageMajorClassForm.submit()
           }
         }
       });
     })
 
 
-    $("#studentTable").on("click", "#deleteButton", function(e){
-      let recordId = $(this).data("studentid")
+    $("#major_class_table").on("click", "#deleteButton", function(e){
+      let recordId = $(this).data("major_class_id")
       $("#deleteConfirm").dialog({
         title: "Confirm Delete",
         modal: true,
@@ -149,7 +149,7 @@
           Cancel: function() {
             $( this ).dialog( "close" );
           },
-          "Delete Student": function() {
+          "Delete majorClass": function() {
             //function to delete record
             deleteRecord(recordId);
           }
